@@ -1,3 +1,15 @@
 # pygame totorial game
 
-## it opens and draws some images
+## updates
+
+| feature name     | Working |
+| ----------- | ----------- |
+| main window opening      | yes   |
+| drawing images   | yes        |
+
+
+
+
+## here is the pygame documentaion
+
+[pygame docs](https://www.pygame.org/docs/)
