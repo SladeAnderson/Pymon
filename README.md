@@ -2,11 +2,11 @@
 
 ## updates
 
-| feature name     | Working |
+| feature name|     Working |
 | ----------- | ----------- |
-| main window opening      | yes   |
-| drawing images   | yes        |
-
+| main window opening | yes |
+| drawing images      | yes |
+| rect                | yes |
 ___
 
 ## documentaion / videos
