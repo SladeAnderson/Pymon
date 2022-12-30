@@ -7,9 +7,11 @@
 | main window opening      | yes   |
 | drawing images   | yes        |
 
+___
 
-
-
-## here is the pygame documentaion
+## documentaion / videos
 
 [pygame docs](https://www.pygame.org/docs/)
+
+[totorial video](https://www.youtube.com/watch?v=AY9MnQ4x3zk)
+___
