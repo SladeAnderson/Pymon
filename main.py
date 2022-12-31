@@ -2,6 +2,8 @@ import pygame
 import sys
 from random import randint
 
+
+#  functions
 def dis_score():
     global currentTime
     currentTime = pygame.time.get_ticks() - start_time
@@ -13,6 +15,8 @@ def dis_score():
     score_sur = test_font.render(f'score: {str(int(currentTime))}', False, (64,64,64))
     score_rect = score_sur.get_rect(topleft = (60,50))
     screen.blit(score_sur ,score_rect)
+
+    return currentTime
     
 def obstacle_movement(obstacle_list):
     if obstacle_list:
@@ -31,8 +35,16 @@ def obstacle_movement(obstacle_list):
         return obstacle_list
     else:
         return []
-        
 
+def collisions(player,obstacles):
+    if obstacles:
+        for obstacle_rect in obstacles:
+            if player.colliderect(obstacle_rect): return False
+    return True
+
+  
+
+#  important varables/ initializeing pygame / imports
 pygame.init()
 screen = pygame.display.set_mode((800,600))
 from fps import FPS
@@ -40,7 +52,9 @@ fps = FPS()
 clock = pygame.time.Clock()
 test_font = pygame.font.Font('font\Pixeltype.ttf', 45)
 game_active = False
-Title_Screen_Active = True
+Title_Screen_Active = False
+real_title = True
+
 start_time = 0
 Score = 0
 
@@ -48,9 +62,14 @@ sky_surface = pygame.image.load('graphics/sky.png').convert()
 ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
 ground_rect = ground_surface.get_rect(topleft = (0 ,300))
 
-intro_text = test_font.render('Welcome to my game press space to start.', False, (64, 64 ,64))
+intro_text = test_font.render('Press Space to start and to jump', False, (64, 64 ,64))
 intro_text_rect = intro_text.get_rect(center = (400,400))
 
+Title_text = test_font.render('Welcome to Runner', False, (64, 64 ,64))
+Title_text_rect = Title_text.get_rect(center = (400 ,200))
+
+Title_text_two = test_font.render('Press space to start and to jump', False, (64, 64 ,64))
+Title_text_two_rect = Title_text_two.get_rect(center = (400 ,300))
 
 # bad guys
 snail_surface = pygame.image.load('graphics/snail/snail1.png').convert_alpha()
@@ -78,6 +97,14 @@ while True:
         if e.type == pygame.QUIT:
             pygame.quit()
             exit()
+        
+        if real_title:
+            if e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_SPACE:
+                    start_time = pygame.time.get_ticks()
+                    game_active = True
+                    real_title = False
+                    Title_Screen_Active = False
 
         if game_active == False:
             if e.type == pygame.KEYDOWN:
@@ -87,11 +114,11 @@ while True:
                     game_active = True
                     Title_Screen_Active = False
 
-        if game_active == True:            
+        if game_active:            
             if player_rect.bottom >= 300:
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_SPACE:
-                        print('pressed')
+                        print('jumped')
                         player_gravity = -20 
         
         if e.type == obstacle_timer and game_active:
@@ -103,19 +130,19 @@ while True:
     fps.render(screen)    
     
 
+
+
+
+    
+    # 
+    #game_active
+    # 
     if game_active == True:
         screen.blit(ground_surface, ground_rect)
         screen.blit(sky_surface, (0 ,0))
-
+        
         Score = dis_score()
         
-        # if snial_rect.left < -80:
-        #     snial_rect.right = 900
-        # screen.blit(snail_surface, snial_rect)
-        # snial_rect.left -= 5    
-        
-
-
         # player
         player_gravity += 1
         player_rect.y += player_gravity
@@ -126,19 +153,26 @@ while True:
         # bad guy movement
         obstacle_rect_list = obstacle_movement(obstacle_rect_list)
 
-
+        # Stuff happening when player dies
+        for obstacle_rect in obstacle_rect_list:
+            if player_rect.colliderect(obstacle_rect):
+                print('died')
+                Score = currentTime
 
         #collision
+        game_active = collisions(player_rect, obstacle_rect_list)
+    else:
+         obstacle_rect_list.clear()
+         Title_Screen_Active = True
+         player_rect.midbottom = (80, 300)
+         player_gravity = 0
          
- 
-    #     if snial_rect.colliderect(player_rect):
-    #         game_active = False
-    #         snial_rect.right = 700
-    #         Score = currentTime
-    #         print (Score)
-    # else:
-    #     Title_Screen_Active = True
 
+
+
+    # 
+    #Title_Screen_Active
+    # 
     if Title_Screen_Active == True:
         screen.fill((94 ,129 ,162))
         screen.blit(player_stand, player_stand_rect)
@@ -150,10 +184,11 @@ while True:
         screen.blit(intro_text,intro_text_rect)
 
 
+    if real_title:
+        screen.fill(((94 ,129 ,162)))
 
-    # if player_rect.colliderect(snial_rect):
-    #     print('has collided')
-    #     print('------------')
+        screen.blit(Title_text, Title_text_rect)
+        screen.blit(Title_text_two, Title_text_two_rect)
 
 
 
