@@ -8,7 +8,7 @@
 | drawing images      | yes |
 | rect                | yes |
 | drawing shapes      | yes |
-| collision           | yes |
+| collision        | broken |
 | score               | yes |
 | player input        | yes | 
 | title screen        | yes |
