@@ -1,7 +1,8 @@
 import pygame
 import sys
-from random import randint
-
+from random import randint, choice
+from player import PLayer
+from obstacle import Obstacle
 
 #  functions
 def dis_score():
@@ -28,26 +29,27 @@ def obstacle_movement(obstacle_list):
             else:
                 screen.blit(fly_surf, obstacle_rect)
 
-            
-
-        obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > -100]
-
         return obstacle_list
     else:
         return []
 
-def collisions(player,obstacles):
-    if obstacles:
-        for obstacle_rect in obstacles:
-            if player.colliderect(obstacle_rect): return False
-    return True
+def sprite_collisions():
+    if pygame.sprite.spritecollide(player.sprite, obstacle_group, False):
+        obstacle_group.empty()
+        Score = currentTime
+        Title_Screen_Active = True
+        real_title = False
+        return False
+    else: 
+        return True
 
-  
+
 
 #  important varables/ initializeing pygame / imports
 pygame.init()
 screen = pygame.display.set_mode((800,600))
 from fps import FPS
+
 fps = FPS()
 clock = pygame.time.Clock()
 test_font = pygame.font.Font('font\Pixeltype.ttf', 45)
@@ -57,6 +59,11 @@ real_title = True
 
 start_time = 0
 Score = 0
+
+player = pygame.sprite.GroupSingle()
+player.add(PLayer())
+
+obstacle_group = pygame.sprite.Group()
 
 sky_surface = pygame.image.load('graphics/sky.png').convert()
 ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
@@ -71,26 +78,23 @@ Title_text_rect = Title_text.get_rect(center = (400 ,200))
 Title_text_two = test_font.render('Press space to start and to jump', False, (64, 64 ,64))
 Title_text_two_rect = Title_text_two.get_rect(center = (400 ,300))
 
-# bad guys
-snail_surface = pygame.image.load('graphics/snail/snail1.png').convert_alpha()
 
-fly_surf = pygame.image.load('graphics/fly/fly1.png').convert_alpha()
-
-obstacle_rect_list = []
-
-
-player_surface = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
-player_rect = player_surface.get_rect(bottomleft = (80,300))
-player_gravity = 0
+#  intro screen
 player_stand = pygame.image.load('graphics/player/player_stand.png').convert_alpha()
 player_stand = pygame.transform.rotozoom(player_stand, 0, 2)
 player_stand_rect = player_stand.get_rect(center = (400 ,300))
-
 
 # Timer
 obstacle_timer = pygame.USEREVENT + 1 
 pygame.time.set_timer(obstacle_timer, 1500)
 
+#  snail animation timer
+bad_guy_timer_1 = pygame.USEREVENT + 2
+pygame.time.set_timer(bad_guy_timer_1, 500)
+
+#  fly animation timer
+bad_guy_timer_2 = pygame.USEREVENT + 3
+pygame.time.set_timer(bad_guy_timer_2, 200)
 
 while True:
     for e in pygame.event.get():
@@ -114,62 +118,39 @@ while True:
                     game_active = True
                     Title_Screen_Active = False
 
-        if game_active:            
-            if player_rect.bottom >= 300:
-                if e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_SPACE:
-                        print('jumped')
-                        player_gravity = -20 
-        
-        if e.type == obstacle_timer and game_active:
-             if randint(0, 2):
-                obstacle_rect_list.append(snail_surface.get_rect(bottomright = (randint(900,1100), 300)))
-             else:
-                obstacle_rect_list.append(fly_surf.get_rect(bottomright = (randint(900,1100), 80)))
+  
+
+
+    #  update/fps stuff
     screen.fill((0, 0, 0,))
     fps.render(screen)    
-    
-
-
-
-
     
     # 
     #game_active
     # 
     if game_active == True:
+        
+        if e.type == obstacle_timer:
+            obstacle_group.add(Obstacle(choice(['fly','snail','snail','snail','fly'])))
+
         screen.blit(ground_surface, ground_rect)
         screen.blit(sky_surface, (0 ,0))
         
         Score = dis_score()
         
         # player
-        player_gravity += 1
-        player_rect.y += player_gravity
-        if player_rect.bottom >= 300:
-            player_rect.bottom = 300
-        screen.blit(player_surface, player_rect)
+        player.draw(screen)
+        player.update()
 
-        # bad guy movement
-        obstacle_rect_list = obstacle_movement(obstacle_rect_list)
+        # bad guys
+        obstacle_group.draw(screen)
+        obstacle_group.update()
+        
+        # collisions
+        game_active = sprite_collisions()
 
-        # Stuff happening when player dies
-        for obstacle_rect in obstacle_rect_list:
-            if player_rect.colliderect(obstacle_rect):
-                print('died')
-                Score = currentTime
-
-        #collision
-        game_active = collisions(player_rect, obstacle_rect_list)
-    else:
-         obstacle_rect_list.clear()
-         Title_Screen_Active = True
-         player_rect.midbottom = (80, 300)
-         player_gravity = 0
-         
-
-
-
+        
+    
     # 
     #Title_Screen_Active
     # 
@@ -183,14 +164,11 @@ while True:
         screen.blit(text_surface, text_rect)
         screen.blit(intro_text,intro_text_rect)
 
-
     if real_title:
         screen.fill(((94 ,129 ,162)))
 
         screen.blit(Title_text, Title_text_rect)
         screen.blit(Title_text_two, Title_text_two_rect)
-
-
 
     pygame.display.update()
     fps.clock.tick(60)
