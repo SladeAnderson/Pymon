@@ -36,9 +36,6 @@ def obstacle_movement(obstacle_list):
 def sprite_collisions():
     if pygame.sprite.spritecollide(player.sprite, obstacle_group, False):
         obstacle_group.empty()
-        Score = currentTime
-        Title_Screen_Active = True
-        real_title = False
         return False
     else: 
         return True
@@ -149,6 +146,10 @@ while True:
         # collisions
         game_active = sprite_collisions()
 
+        if game_active == False:
+            Score = currentTime
+            Title_Screen_Active = True
+            real_title = False
         
     
     # 
