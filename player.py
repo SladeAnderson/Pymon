@@ -1,9 +1,13 @@
 import pygame
+import os
+
+
+
 
 class PLayer(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-
+        
         player_walk_2 = pygame.image.load('graphics/player/player_walk_2.png').convert_alpha()
         player_walk_1 = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
         self.player_walk = [player_walk_1,player_walk_2]
@@ -14,10 +18,14 @@ class PLayer(pygame.sprite.Sprite):
         self.image = self.player_walk[self.player_index]
         self.rect = self.image.get_rect(bottomleft = (80 ,300))
         self.gravity = 0
+        pygame.mixer.init()
+        self.jump_sound = pygame.mixer.Sound('audio/jump.wav')
+        self.jump_sound.set_volume(0.5)
 
     def player_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and self.rect.bottom >= 300:
+            self.jump_sound.play()
             self.gravity = -20
     
     def apply_gravity(self):

@@ -1,5 +1,9 @@
 # pygame totorial game
 
+- [x] Learn Python
+- [x] Learn Pygame
+- [] Make Own Game
+
 ## updates
 
 | feature name|     Working |
@@ -16,6 +20,7 @@
 | gravity             | yes |
 | animation           | yes |
 | Sprite Class        | yes |
+| audio               | yes |
 
 ___
 

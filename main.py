@@ -36,6 +36,7 @@ def obstacle_movement(obstacle_list):
 def sprite_collisions():
     if pygame.sprite.spritecollide(player.sprite, obstacle_group, False):
         obstacle_group.empty()
+        bg_Music.stop()
         return False
     else: 
         return True
@@ -43,6 +44,7 @@ def sprite_collisions():
 
 
 #  important varables/ initializeing pygame / imports
+
 pygame.init()
 screen = pygame.display.set_mode((800,600))
 from fps import FPS
@@ -53,9 +55,18 @@ test_font = pygame.font.Font('font\Pixeltype.ttf', 45)
 game_active = False
 Title_Screen_Active = False
 real_title = True
-
 start_time = 0
 Score = 0
+bg_Music = pygame.mixer.Sound('audio/music.wav')
+bg_Music.play(loops = -1)
+bg_Music.set_volume(0.6)
+
+
+
+
+
+
+
 
 player = pygame.sprite.GroupSingle()
 player.add(PLayer())
@@ -111,6 +122,8 @@ while True:
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_SPACE:
                     print('game loading')
+                    bg_Music.play()
+                    bg_Music.set_volume(0.6)
                     start_time = pygame.time.get_ticks()
                     game_active = True
                     Title_Screen_Active = False
@@ -128,7 +141,7 @@ while True:
     if game_active == True:
         
         if e.type == obstacle_timer:
-            obstacle_group.add(Obstacle(choice(['fly','snail','snail','snail','fly'])))
+            obstacle_group.add(Obstacle(choice(['fly','snail','snail','snail'])))
 
         screen.blit(ground_surface, ground_rect)
         screen.blit(sky_surface, (0 ,0))
