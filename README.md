@@ -2,7 +2,7 @@
 
 - [x] Learn Python
 - [x] Learn Pygame
-- [] Make Own Game
+- [ ] Make Own Game
 
 ## updates
 
