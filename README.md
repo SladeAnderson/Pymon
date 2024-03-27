@@ -9,18 +9,14 @@
 | feature name|     Working |
 | ----------- | ----------- |
 | main window opening | yes |
-| drawing images      | yes |
-| rect                | yes |
-| drawing shapes      | yes |
-| collision           | yes |
-| score               | yes |
-| player input        | yes | 
-| title screen        | yes |
-| showing fps         | yes |
-| gravity             | yes |
-| animation           | yes |
-| Sprite Class        | yes |
-| audio               | yes |
+| collision           | no |
+| player input        | no | 
+| title screen        | no |
+| showing fps         | no |
+| gravity             | no |
+| animation           | no |
+| Sprite Class        | no |
+| audio               | no |
 
 ___
 
